@@ -1,0 +1,385 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			input[type="button"] { 
+				background-color: AntiqueWhite; 
+				margin: 4px 2px;
+				padding: 5px;
+				font-size:15px;
+			} 
+			.wrapper{
+				position:relative;
+				width:30%;
+				height:500px;
+				background-color:Ivory;
+				margin:auto;
+				padding:10px;
+				border: 3px solid black;
+				font-family: Arial, Helvetica, sans-serif;
+				font-size:20px;
+			}
+			#download{
+				background-color:GhostWhite;
+				position:absolute;
+				bottom:0px;
+				left:0px;
+			}
+		</style>
+		<script>
+			/**
+				init(): initializes the webpage.
+				input: none
+				output: none
+			*/
+			function init(){
+				mainPagesWrapper = document.getElementById("mainPagesWrapper");
+				checkOutWrapper = document.getElementById("checkOutWrapper");
+				tipPageWrapper = document.getElementById("tipPageWrapper");
+				waitingWrapper = document.getElementById("waitingWrapper");
+				
+				var slider = document.getElementsByClassName("slider");
+				for(var i=0; i<slider.length; i++){
+					sliderLstId.push(slider[i].id);
+				}
+				var displayVal = document.getElementsByClassName("sliderVal");
+				for(var i=0; i<displayVal.length; i++){
+					displayValLstId.push(displayVal[i].id)
+				}
+				
+				var needVal = document.getElementsByClassName("targetVal");
+				for(var i=0; i<needVal.length; i++){
+					needValLstId.push(needVal[i].id)
+				}
+				
+				checkOutWrapper.style.display="none";
+				tipPageWrapper.style.display="none";
+				waitingWrapper.style.display="none";
+
+			}
+			/**
+				resetStatus(): reset the slider values and the display values of the items.
+				input: none
+				output: none
+			*/
+			function resetStatus(){
+				var slider = document.getElementsByClassName("slider");
+				for(var i=0; i<slider.length; i++){
+					slider[i].value = 0;
+				}
+				
+				var displayVal = document.getElementsByClassName("sliderVal");
+				for(var i=0; i<displayVal.length; i++){
+					displayVal[i].innerHTML = '0';
+				}
+
+			}
+			
+			function autoCheckcout(){
+				var time = 500;
+				for (var i=0; i<sliderLstId.length; i++) {
+					document.getElementById(sliderLstId[i]).value = 0;
+					document.getElementById(displayValLstId[i]).innerHTML = '0';
+					for(var j=0; j<=targetValLst[i]; j++){
+						
+						var timer = setTimeout(helperCheckout, time, i, j);
+						time +=500;
+					}
+				}
+			}
+			
+			function helperCheckout(i, j){
+				document.getElementById(sliderLstId[i]).value = j;
+				document.getElementById(displayValLstId[i]).innerHTML = j;
+				document.getElementById(needValLstId[i]).innerHTML = targetValLst[i]-j;
+			}
+		
+		
+			function activateCheckout(checkoutType){
+				//decision = 0 if self-checkout
+				decision = checkoutType;
+				
+				if(decision==0){
+					peopleInLine = peopleInSelf;
+				}else{
+					peopleInLine = peopleInReg;
+				}
+				
+				
+				timeStart = performance.now();
+				mainPagesWrapper.style.display="none"
+				if(peopleInLine<=0){
+					setRandomTarget();
+					checkOutWrapper.style.display="block"
+					if(decision == 1){
+						autoCheckcout();
+					}
+				}else{
+					waitingWrapper.style.display="block";
+					setWaitingTimer();
+				}
+				
+			}
+			
+			function setRandomTarget(){
+				var targetText = document.getElementsByClassName('targetVal');
+				var maxTarget = 10;
+				var minTarget = 0;
+				targetValLst=[];
+				for(var i=0; i< targetText.length; i++){
+					var val = Math.floor(Math.random() * (maxTarget - minTarget + 1) + minTarget);
+					targetText[i].innerHTML = val;
+					targetValDic[targetText[i].id] = val;
+					targetValLst.push(val);
+				}
+			}
+			
+			
+			function extractSliderValue(slider, displayValId, targetValId){
+				displaySpan = document.getElementById(displayValId);
+				targetSpan = document.getElementById(targetValId);
+				displaySpan.innerHTML = slider.value;
+				
+				targetSpan.innerHTML = targetValDic[targetValId] - slider.value;
+			}
+			
+			function setWaitingTimer(){
+				var numPeopleTxt = document.getElementById("waitingForNumPpl");
+				numPeopleTxt.innerHTML=peopleInLine;
+				
+				var maxWaitTime = 3000;
+				var minWaitTime = 1000;
+				
+				var totalWaitTime = 0;
+				for(var i=peopleInLine; i>0; i--){
+					var randomWaitPerPerson = Math.random() * (maxWaitTime - minWaitTime + 1) + minWaitTime;
+					console.log(randomWaitPerPerson/1000);
+					totalWaitTime+=randomWaitPerPerson;
+					var timer = setTimeout(updateWait, totalWaitTime, numPeopleTxt);
+				}
+			}
+			
+			function updateWait(numPeopleTxt){
+				peopleInLine-=1;
+				if(peopleInLine<=0){
+					setRandomTarget();
+					checkOutWrapper.style.display="block";
+					waitingWrapper.style.display="none";
+					if(decision ==1){
+						autoCheckcout();
+					}
+				}else{
+					numPeopleTxt.innerHTML=peopleInLine;
+
+				}
+			}
+			
+			
+			function activateTipPage(){
+				var targetText = document.getElementsByClassName('targetVal');
+				var correct = true;
+				for(var i=0; i< targetText.length; i++){
+					targetVal = targetText[i].innerHTML 
+					if (targetVal!=0){
+						confirm("Please scan the correct number of items!");
+						correct = false;
+					}
+				}
+				if(correct){
+					checkOutWrapper.style.display="none";
+					tipPageWrapper.style.display="block";
+				}
+				
+			}
+			
+			function returnHomePage(){
+				mainPagesWrapper.style.display = "block";
+				checkOutWrapper.style.display="none";
+				tipPageWrapper.style.display="none";
+				resetStatus();
+				
+				loop+=1;
+				var maxPeople = 10;
+				var minPeople = 0;
+				
+				if (loop>=1 & loop<10){
+					peopleInSelf = Math.floor(Math.random() * (maxPeople - minPeople + 1) + minPeople);
+					peopleInReg = Math.floor(Math.random() * (maxPeople - minPeople + 1) + minPeople);
+				}
+				document.getElementById("numPeopleSelf").innerHTML = peopleInSelf;
+				document.getElementById("numPeopleRegister").innerHTML = peopleInReg;
+				
+				
+			}
+			
+			function saveData(tipPer){
+				timeEnd = performance.now();
+				console.log(timeEnd);
+				timePassed = (timeEnd - timeStart)/1000;
+				dataCollectionLst.push([decision, [peopleInSelf, peopleInReg], timePassed, tipPer]);
+				console.log(dataCollectionLst);
+			}
+			
+			//https://www.jameslmilner.com/posts/downloading-a-file-with-javascript/
+			function downloadData(){
+				// Turn the JSON object into a string
+				const data = JSON.stringify(dataCollectionLst);
+
+				// Pass the string to a Blob and turn it
+				// into an ObjectURL
+				const blob = new Blob([data], { type: "application/json" });
+				const jsonObjectUrl = URL.createObjectURL(blob);
+
+				// Create an anchor element, set it's
+				// href to be the Object URL we have created
+				// and set the download property to be the file name
+				// we want to set
+				const filename = "tipping_game_data.json";
+				const anchorEl = document.createElement("a");
+				anchorEl.href = jsonObjectUrl;
+				anchorEl.download = filename;
+
+				// There is no need to actually attach the DOM
+				// element but we do need to click on it
+				anchorEl.click();
+
+				// We don't want to keep a reference to the file
+				// any longer so we release it manually
+				URL.revokeObjectURL(jsonObjectUrl);
+			}
+			
+			var mainPagesWrapper;
+			var checkOutWrapper;
+			var tipPageWrapper;
+			var waitingWrapper;
+			
+			
+			var decision;
+			var timeStart;
+			var timeEnd;
+			var timePassed;
+			var loop=0;			
+			var peopleInSelf=0;
+			var peopleInReg=0;
+			var peopleInLine=0;
+
+
+			var targetValDic = {} //dic for target ID and target value
+			var sliderLstId = [] //list of slider ID
+			var targetValLst = [] // list of target values
+			var displayValLstId = [] //list of display value ID
+			var needValLstId = [] //list of need value ID
+			/*
+				Elements:
+					var selection: 0 for register, 1 for self-checkout
+					var peopleInLine: [ , ] number of people in self-checkout vs number of people in register
+
+					var timeElipse: time it took to complete the transaction (seconds)
+					var tipPercent: tip percent
+					var tipAmount: tip amount
+			*/
+			var dataCollectionLst = [] 
+			
+			
+			//Qualtrics Embedded Data
+			var choice;
+			var choices = [];
+			
+			
+			
+			
+			window.onload=function(){
+				init();
+			}
+			
+			//Ctrl+q
+			<!-- Qualtrics.SurveyEngine.addOnload(function() -->
+			<!-- { -->
+				<!-- /*Place your JavaScript here to run when the page loads*/ -->
+
+			<!-- }); -->
+
+			<!-- Qualtrics.SurveyEngine.addOnReady(function() -->
+			<!-- { -->
+				<!-- /*Place your JavaScript here to run when the page is fully displayed*/ -->
+				<!-- alert("working!"); -->
+
+			<!-- }); -->
+
+			<!-- Qualtrics.SurveyEngine.addOnUnload(function() -->
+			<!-- { -->
+				<!-- /*Place your JavaScript here to run when the page is unloaded*/ -->
+				<!-- alert("ended!"); -->
+				<!-- alert(decision); -->
+				<!-- var choices = "${e://Field/choices}"; -->
+
+				<!-- //var choice = this.getSelectedChoices(); -->
+				<!-- //var choice = "${q://D3/ChoiceGroup/SelectedChoices}"; -->
+				
+				<!-- Qualtrics.SurveyEngine.setEmbeddedData( 'choices', decision); -->
+				<!-- alert("${e://Field/choices}"); -->
+				<!-- //Qualtrics.SurveyEngine.setEmbeddedData( 'choices', choices+""+choice); -->
+				<!-- //console.log(this.getSelectedChoices()); -->
+				<!-- //alert(this.getSelectedChoices()) -->
+			<!-- }); -->
+						
+			
+			
+		</script>
+	</head>
+	<body>
+		<div class="wrapper" id='mainPagesWrapper'>
+			<div>
+				Currently in line: <span id="numPeopleSelf">0</span> people
+				<input type="button" value="Self-Checkout" onclick="activateCheckout(0)" class="mainPageButton" id="onePerson">
+
+			</div>
+			<div>
+				Currently in line: <span id="numPeopleRegister">0</span> people
+				<input type="button" value="Register" onclick="activateCheckout(1)" class="mainPageButton" id="twoPeople">
+			</div>
+			<div>
+				<input type="button" value="Download" onclick="downloadData()" id="download">
+			</div>
+		</div>
+		<div class="wrapper" id='checkOutWrapper'>
+			<div id='goal'>
+				<div>Number of carrots needed to be scanned: <span id='carrotNeedVal' class = 'targetVal'>0</span></div>
+				<div>Number of cabbage needed to be scanned: <span id='cabbageNeedVal' class = 'targetVal'>0</span></div>
+				<div>Number of eggplant needed to be scanned: <span id='eggplantNeedVal' class = 'targetVal'>0</span></div>
+			</div>
+			<div class="itemWrapper">
+				<div> carrot: <span id="carrotDisplayVal" class = "sliderVal">0</span></div>
+				<input type="range" min="0" max="10" value="0" class="slider" id="carrotSlider" oninput="extractSliderValue(this, 'carrotDisplayVal', 'carrotNeedVal')">
+			</div>
+			<div class="itemWrapper">
+				<div> cabbage: <span id="cabbageDisplayVal" class = "sliderVal">0</span></div>
+				<input type="range" min="0" max="10" value="0" class="slider" id="cabbageSlider" oninput="extractSliderValue(this, 'cabbageDisplayVal', 'cabbageNeedVal')">
+			</div>
+			<div class="itemWrapper">
+				<div> eggplant: <span id="eggplantDisplayVal" class = "sliderVal">0</span></div>
+				<input type="range" min="0" max="10" value="0" class="slider" id="eggplantSlider" oninput="extractSliderValue(this, 'eggplantDisplayVal', 'eggplantNeedVal')">
+			</div>
+			
+			<input type="button" value="Pay" onclick="activateTipPage()" class="paybutton" id="selfCheckOutPayBut">
+
+		</div>
+		
+		<div class="wrapper" id='tipPageWrapper'>
+			<div>Tip</div>
+			<input type="button" value="10%" onclick="saveData(this.value), returnHomePage()" class="tipButton" id="per_10">
+			<input type="button" value="15%" onclick="saveData(this.value), returnHomePage()" class="tipButton" id="per_15">
+			<input type="button" value="20%" onclick="saveData(this.value), returnHomePage()" class="tipButton" id="per_20">
+			<input type="button" value="Custome" onclick="saveData(this.value), returnHomePage()" class="tipButton" id="customize">
+			<input type="button" value="None" onclick="saveData(this.value), returnHomePage()" class="tipButton" id="per_0">
+			<div id='customizeWrapper'>
+				<input type="number">
+				
+			</div>
+		</div>
+		
+		<div id="waitingWrapper">
+			<div> Currently there's <span id="waitingForNumPpl">0</span> people in front of you</div>
+		</div>
+	</body>
+</html>
