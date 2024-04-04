@@ -327,7 +327,7 @@
 					peopleInSelf = Math.floor(Math.random() * (maxPeople - minPeople + 1) + minPeople);
 					peopleInReg = Math.floor(Math.random() * (maxPeople - minPeople + 1) + minPeople);
 
-				}else{
+				}else if(loop<json_data['loops']){
 					peopleInSelf = json_data['peopleInLine'][loop][0];
 					peopleInReg = json_data['peopleInLine'][loop][1];
 				}
