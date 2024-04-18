@@ -1,50 +1,4 @@
-<!doctype html>
-<html>
-	<head>
-		<style>
-			input[type="button"] { 
-				background-color: #ffe7b4; 
-				margin: 4px 2px;
-				padding: 5px;
-				font-size:15px;
-			} 
-			input[type="button"]:hover { 
-				background-color: #ffd98d; 
-			} 
-			input[type="button"]:active { 
-				background-color: #ffc24e; 
-			} 
-			
-			.wrapper{
-				position:relative;
-				width:30%;
-				height:500px;
-				background-color:Ivory;
-				margin:auto;
-				padding:10px;
-				border: 3px solid black;
-				font-family: Arial, Helvetica, sans-serif;
-				font-size:20px;
-			}
-			#downloadBut{
-				background-color:GhostWhite;
-				position:absolute;
-				bottom:0px;
-				left:0px;
-			}
-			
-			
-			
-			
-			#customTipWarning{
-				color: red;
-				font-size:10px
-				
-			}
-		</style>
-		 <script type="text/javascript" src="tipping_game_json.json"></script>
-		<script>
-			/**
+/**
 				Code from https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js
 				This allows setting a random seed 
 			*/
@@ -374,7 +328,7 @@
 				
 				var maxPeople = 10;
 				var minPeople = 0;
-				if (json_data != 0){
+				if (json_data !=0){
 					if (loop>=json_data['loops']){
 						var downloadBut = document.getElementById("downloadBut");
 						var selfCheckoutBut = document.getElementById("selfCheckoutBut");
@@ -385,7 +339,7 @@
 						registerBut.disabled = true;
 					}
 				}
-				if (json_data == 0){
+				if (json_data ==0){
 					peopleInSelf = Math.floor(Math.random() * (maxPeople - minPeople + 1) + minPeople);
 					peopleInReg = Math.floor(Math.random() * (maxPeople - minPeople + 1) + minPeople);
 
@@ -409,168 +363,29 @@
 				tipTimeEnd = performance.now();
 				masterTimePassed = (masterTimeEnd - masterTimeStart)/1000;
 				tipTimePassed = (tipTimeEnd - tipTimeStart)/1000;
-				//dataCollectionLst.push([decision, [peopleInSelf, peopleInReg], timeInLine, itemQuantity, masterTimePassed, [tipTimePassed, tipPer], timeStamp]);
-				dataCollectionLst.push({"decision":decision, "peopleInLine":[peopleInSelf, peopleInReg], 
-								"timeInLine": timeInLine, "itemQuantity":itemQuantity, "timeElipse":masterTimePassed, 
-								"tipInfo":[tipTimePassed, tipPer], "timeStamp":timeStamp});
-
+				dataCollectionLst.push([decision, [peopleInSelf, peopleInReg], timeInLine, itemQuantity, masterTimePassed, [tipTimePassed, tipPer], timeStamp]);
 				console.log(dataCollectionLst);
 			}
 			
 			//https://www.jameslmilner.com/posts/downloading-a-file-with-javascript/
 			function downloadData(){
-				const data = JSON.stringify(dataCollectionLst);
-
-				const blob = new Blob([data], { type: "application/json" });
-				const jsonObjectUrl = URL.createObjectURL(blob);
-
-				const filename = "tipping_game_data.json";
-				const anchorEl = document.createElement("a");
-				anchorEl.href = jsonObjectUrl;
-				anchorEl.download = filename;
-
-				anchorEl.click();
-
-				URL.revokeObjectURL(jsonObjectUrl);
-			}
-			
-			//Global variables 
-			var seed = 5;
-			
-			/**Json file will have the form as such:
-				data = '[{
-					"loops": 2  #This is the number of loops we are doing
-					"tips": [10%, 15%, 20%] 	#This is the amount of tip percent
-					"peopleInLine": [[0, 0], [1, 2]],  #This is the people in life for checkout
-					"itemQuantity": [[2, 5, 3], [0, 4, 9]]  #This is how mnay items to scan
-					"totalPrice":[10.59, 11.20]		#This is how much all the items cost
-					"noneTipButton": true 	#show the none tip button or not
-				
-				}]';
-				for example
-				data = '[{"loops": 2, "tips": ["10%", "15%", "50%"], "peopleInLine" : [[0, 4], [1, 0]], "itemQuantity" : [[0, 0, 1], [0, 2, 1]], "totalPrice":[10.59, 11.20], "noneTipButton":true}]';
-				if we don't want to assign anything, create a json file as such
-				data = '[0]';
-			*/
-			var json_data = JSON.parse(data)[0];
-			var mainPagesWrapper;
-			var checkOutWrapper;
-			var tipPageWrapper;
-			var waitingWrapper;
-			
-			var decision;
-			var masterTimeStart;
-			var masterTimeEnd;
-			var masterTimePassed;
-			var tipTimeStart;
-			var tipTimeEnd;
-			var tipTimePassed
-			var loop=0;			
-			var peopleInSelf=0;
-			var peopleInReg=0;
-			var peopleInLine=0;
-			var timeInLine =0;
-			var finalTipAmount = 0;
-			
-			var listOfNames = ["Addison","Angel","Blaine","Brett","Carmen","Clay","Cole","Drew","Ember","Finn","George",
-								"Harley","Jade","Kelsey","Lennon","Madison","Nolan","Owen","Pat","Quincy","Rayne","Sean",
-								"Taylor","Umber","Vick","Wesley","Zephyr"]
-
-
-			var targetValDic = {} //dic for target ID and target value
-			var sliderLstId = [] //list of slider ID
-			var targetValLst = [] // list of target values
-			var displayValLstId = [] //list of display value ID
-			var needValLstId = [] //list of need value ID
-			var timeStamp=[]//list of time/button click on
-			var itemQuantity=[]
-			/**
-				Elements:
-					var decision: 0 for register, 1 for self-checkout
-					var peopleInLine: [ , ] number of people in self-checkout vs number of people in register
-					var timeInLine: how long the person waited in line
-					var itemQuantity: [] how many items to scan 
-					var timeElipse: time it took to complete the entire transaction (seconds)
-					var tip: [ , ] time to decide tip and the percentage of tip/amount
-					var timeStamp: time stamp of every button clicked
-			*/
-			var dataCollectionLst = [] 
-			
-
-			
-			window.onload=function(){
-				init();
-
+				const data_json = JSON.stringify(dataCollectionLst);
+				var dataCollection = "${e://Field/dataCollection}";
+				Qualtrics.SurveyEngine.setEmbeddedData( 'dataCollection', data_json);
+				var dataCollection = "${e://Field/dataCollection}";
+				//const data = JSON.stringify(dataCollectionLst);
+				//
+				//const blob = new Blob([data], { type: "application/json" });
+				//const jsonObjectUrl = URL.createObjectURL(blob);
+				//
+				//const filename = "tipping_game_data.json";
+				//const anchorEl = document.createElement("a");
+				//anchorEl.href = jsonObjectUrl;
+				//anchorEl.download = filename;
+				//
+				//anchorEl.click();
+				//
+				//URL.revokeObjectURL(jsonObjectUrl);
 			}
 			
 			
-		</script>
-	</head>
-	<body>
-		<div class="wrapper" id='mainPagesWrapper'>
-			<div>
-				Currently in line: <span id="numPeopleSelf">0</span> people
-				<input type="button" value="Self-Checkout" onclick="activateCheckout(0), collectTimeStamp(this.id)" class="mainPageButton" id="selfCheckoutBut">
-
-			</div>
-			<div>
-				Currently in line: <span id="numPeopleRegister">0</span> people
-				<input type="button" value="Register" onclick="activateCheckout(1), collectTimeStamp(this.id)" class="mainPageButton" id="registerBut">
-			</div>
-			<div>
-				<input type="button" value="Save Data" onclick="downloadData()" id="downloadBut">
-			</div>
-		</div>
-		<div class="wrapper" id='checkOutWrapper'>
-			<div id='goal'>
-				<div>Number of carrots needed to be scanned: <span id='carrotNeedVal' class = 'targetVal'>0</span></div>
-				<div>Number of cabbage needed to be scanned: <span id='cabbageNeedVal' class = 'targetVal'>0</span></div>
-				<div>Number of eggplant needed to be scanned: <span id='eggplantNeedVal' class = 'targetVal'>0</span></div></br>
-			</div>
-			<div id="custodian">Hi! My name is <span id="custodianName"></span>. I will be helping you today.</div></br>
-			<div class="itemWrapper">
-				<div> carrot: <span id="carrotDisplayVal" class = "sliderVal">0</span></div>
-				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'carrotSlider','carrotDisplayVal', 'carrotNeedVal'), collectTimeStamp(this.id)" id="carrot-">
-				<input type="number" min="0" max="10" value="0" class="slider" id="carrotSlider" readonly>
-				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'carrotSlider','carrotDisplayVal', 'carrotNeedVal'), collectTimeStamp(this.id)" id="carrot+">
-
-			</div>
-			<div class="itemWrapper">
-				<div> cabbage: <span id="cabbageDisplayVal" class = "sliderVal">0</span></div>
-				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'cabbageSlider','cabbageDisplayVal', 'cabbageNeedVal'), collectTimeStamp(this.id)" id="cabbage-">
-				<input type="number" min="0" max="10" value="0" class="slider" id="cabbageSlider" readonly>
-				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'cabbageSlider','cabbageDisplayVal', 'cabbageNeedVal'), collectTimeStamp(this.id)" id="cabbage+">
-			</div>
-			<div class="itemWrapper">
-				<div> eggplant: <span id="eggplantDisplayVal" class = "sliderVal">0</span></div>
-				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'eggplantSlider','eggplantDisplayVal', 'eggplantNeedVal'), collectTimeStamp(this.id)" id="eggplant-">
-				<input type="number" min="0" max="10" value="0" class="slider" id="eggplantSlider" readonly>
-				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'eggplantSlider','eggplantDisplayVal', 'eggplantNeedVal'), collectTimeStamp(this.id)" id="eggplant+">
-			</div></br>
-			
-			<input type="button" value="Pay" onclick="activateTipPage(), collectTimeStamp(this.id)" class="paybutton" id="payBut">
-
-		</div>
-		
-		<div class="wrapper" id='tipPageWrapper'>
-			<div>Tip</div></br>
-			<div>Your total cost is $<span id='totalCost'>0</span></div>
-			<div id="tipAmount"></div>
-			<input type="button" value="10%" onclick="collectTimeStamp(this.id), saveData(this.value), returnHomePage()" class="tipButton" id="per_1st_but">
-			<input type="button" value="15%" onclick="collectTimeStamp(this.id), saveData(this.value), returnHomePage()" class="tipButton" id="per_2nd_but">
-			<input type="button" value="20%" onclick="collectTimeStamp(this.id), saveData(this.value), returnHomePage()" class="tipButton" id="per_3rd_but"></br>
-			<input type="button" value="Custom" onclick="collectTimeStamp(this.id), showCustomTip()" class="tipButton" id="customizeBut">
-			<input type="button" value="None" onclick="collectTimeStamp(this.id), saveData(this.value), returnHomePage()" class="tipButton" id="per_0_but">
-			<div id='customizeWrapper'>
-				<input type="text" placeholder='$' id='customizeTipAmount' oninput="customTipValueChange(this.value)">
-				<input type="button" value="Comfirm" onclick="checkNull(document.getElementById('customizeTipAmount').value, this.id)" id="confirmBut">
-				<span id='tipToPercent', style="font-size:12px">0%</span>
-				<p id="customTipWarning">Tip must be a numerical value!</p>
-			</div>
-		</div>
-		
-		<div class="wrapper" id="waitingWrapper">
-			<div> Currently there's <span id="waitingForNumPpl">0</span> people in front of you</div>
-		</div>
-	</body>
-</html>
