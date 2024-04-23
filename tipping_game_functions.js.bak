@@ -363,9 +363,8 @@
 				tipTimeEnd = performance.now();
 				masterTimePassed = (masterTimeEnd - masterTimeStart)/1000;
 				tipTimePassed = (tipTimeEnd - tipTimeStart)/1000;
-				dataCollectionLst.push({"decision":decision, "peopleInLine":[peopleInSelf, peopleInReg], 
-								"timeInLine": timeInLine, "itemQuantity":itemQuantity, "timeElipse":masterTimePassed, 
-								"tipInfo":[tipTimePassed, tipPer], "timeStamp":timeStamp});				console.log(dataCollectionLst);
+				dataCollectionLst.push([decision, [peopleInSelf, peopleInReg], timeInLine, itemQuantity, masterTimePassed, [tipTimePassed, tipPer], timeStamp]);
+				console.log(dataCollectionLst);
 			}
 			
 			//https://www.jameslmilner.com/posts/downloading-a-file-with-javascript/
