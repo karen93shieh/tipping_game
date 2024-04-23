@@ -1,8 +1,73 @@
-/**
+<!doctype html>
+<html>
+	<head>
+		<style>
+			input[type="button"] { 
+				background-color: #ffe7b4; 
+				margin: 4px 2px;
+				padding: 5px;
+				font-size:15px;
+			} 
+			input[type="button"]:hover { 
+				background-color: #ffd98d; 
+			} 
+			input[type="button"]:active { 
+				background-color: #ffc24e; 
+			} 
+			
+			.wrapper{
+				position:relative;
+				width:30%;
+				height:500px;
+				background-color:Ivory;
+				margin:auto;
+				padding:10px;
+				border: 3px solid black;
+				font-family: Arial, Helvetica, sans-serif;
+				font-size:20px;
+			}
+			#downloadBut{
+				background-color:GhostWhite;
+				position:absolute;
+				bottom:0px;
+				left:0px;
+			}
+			
+			
+			
+			
+			#customTipWarning{
+				color: red;
+				font-size:10px
+				
+			}
+		</style>
+		<script>
+			/**
 				Code from https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js
 				This allows setting a random seed 
 			*/
 			!function(f,a,c){var s,l=256,p="random",d=c.pow(l,6),g=c.pow(2,52),y=2*g,h=l-1;function n(n,t,r){function e(){for(var n=u.g(6),t=d,r=0;n<g;)n=(n+r)*l,t*=l,r=u.g(1);for(;y<=n;)n/=2,t/=2,r>>>=1;return(n+r)/t}var o=[],i=j(function n(t,r){var e,o=[],i=typeof t;if(r&&"object"==i)for(e in t)try{o.push(n(t[e],r-1))}catch(n){}return o.length?o:"string"==i?t:t+"\0"}((t=1==t?{entropy:!0}:t||{}).entropy?[n,S(a)]:null==n?function(){try{var n;return s&&(n=s.randomBytes)?n=n(l):(n=new Uint8Array(l),(f.crypto||f.msCrypto).getRandomValues(n)),S(n)}catch(n){var t=f.navigator,r=t&&t.plugins;return[+new Date,f,r,f.screen,S(a)]}}():n,3),o),u=new m(o);return e.int32=function(){return 0|u.g(4)},e.quick=function(){return u.g(4)/4294967296},e.double=e,j(S(u.S),a),(t.pass||r||function(n,t,r,e){return e&&(e.S&&v(e,u),n.state=function(){return v(u,{})}),r?(c[p]=n,t):n})(e,i,"global"in t?t.global:this==c,t.state)}function m(n){var t,r=n.length,u=this,e=0,o=u.i=u.j=0,i=u.S=[];for(r||(n=[r++]);e<l;)i[e]=e++;for(e=0;e<l;e++)i[e]=i[o=h&o+n[e%r]+(t=i[e])],i[o]=t;(u.g=function(n){for(var t,r=0,e=u.i,o=u.j,i=u.S;n--;)t=i[e=h&e+1],r=r*l+i[h&(i[e]=i[o=h&o+t])+(i[o]=t)];return u.i=e,u.j=o,r})(l)}function v(n,t){return t.i=n.i,t.j=n.j,t.S=n.S.slice(),t}function j(n,t){for(var r,e=n+"",o=0;o<e.length;)t[h&o]=h&(r^=19*t[h&o])+e.charCodeAt(o++);return S(t)}function S(n){return String.fromCharCode.apply(0,n)}if(j(c.random(),a),"object"==typeof module&&module.exports){module.exports=n;try{s=require("crypto")}catch(n){}}else"function"==typeof define&&define.amd?define(function(){return n}):c["seed"+p]=n}("undefined"!=typeof self?self:this,[],Math);
+			
+			
+			function preload(){
+				//Get all the wrapper 
+				loadingPageWrapper = document.getElementById("loadingPageWrapper");
+				mainPagesWrapper = document.getElementById("mainPagesWrapper");
+				checkOutWrapper = document.getElementById("checkOutWrapper");
+				tipPageWrapper = document.getElementById("tipPageWrapper");
+				waitingWrapper = document.getElementById("waitingWrapper");
+				
+				mainPagesWrapper.style.display="none";
+				checkOutWrapper.style.display="none";
+				tipPageWrapper.style.display="none";
+				waitingWrapper.style.display="none";
+				
+			}
+			
+			
+			
+			
 			
 			/**
 				init(): initializes the webpage.
@@ -12,11 +77,7 @@
 			function init(){
 			
 				Math.seedrandom(seed);
-				//Get all the wrapper 
-				mainPagesWrapper = document.getElementById("mainPagesWrapper");
-				checkOutWrapper = document.getElementById("checkOutWrapper");
-				tipPageWrapper = document.getElementById("tipPageWrapper");
-				waitingWrapper = document.getElementById("waitingWrapper");
+				
 				var downloadBut = document.getElementById("downloadBut");
 				var custodian = document.getElementById("custodian");
 				
@@ -59,12 +120,18 @@
 				}
 				
 				
-				//set the wrappers to invisible for irrelavant 
+				//set the wrappers to invisible for irrelavant wrappers
+				loadingPageWrapper.style.display="none";
 				checkOutWrapper.style.display="none";
 				tipPageWrapper.style.display="none";
 				waitingWrapper.style.display="none";
+				
+				//set irrelavant elements to invisible
 				downloadBut.style.display="none";
 				custodian.style.display="none";
+				
+				mainPagesWrapper.style.display="block";
+				
 
 			}
 			/**
@@ -302,7 +369,7 @@
 			
 			function checkNull(tipValue, butID){
 				var warningText = document.getElementById('customTipWarning');
-				if (tipValue == null || tipValue ==''){
+				if (tipValue == null || tipValue ==''||isNaN(tipValue)){
 					warningText.style.display="block";
 				}else{
 					warningText.style.display="none";
@@ -328,7 +395,7 @@
 				
 				var maxPeople = 10;
 				var minPeople = 0;
-				if (json_data !=0){
+				if (json_data != 0){
 					if (loop>=json_data['loops']){
 						var downloadBut = document.getElementById("downloadBut");
 						var selfCheckoutBut = document.getElementById("selfCheckoutBut");
@@ -339,7 +406,7 @@
 						registerBut.disabled = true;
 					}
 				}
-				if (json_data ==0){
+				if (json_data == 0){
 					peopleInSelf = Math.floor(Math.random() * (maxPeople - minPeople + 1) + minPeople);
 					peopleInReg = Math.floor(Math.random() * (maxPeople - minPeople + 1) + minPeople);
 
@@ -354,8 +421,9 @@
 				document.getElementById("numPeopleSelf").innerHTML = peopleInSelf;
 				document.getElementById("numPeopleRegister").innerHTML = peopleInReg;
 				//Determine when to enable the download button
-				var downloadBut = document.getElementById("downloadBut");
-				downloadBut.style.display="block";
+				
+				//var downloadBut = document.getElementById("downloadBut");
+				//downloadBut.style.display="block";
 			}
 			
 			function saveData(tipPer){
@@ -363,9 +431,12 @@
 				tipTimeEnd = performance.now();
 				masterTimePassed = (masterTimeEnd - masterTimeStart)/1000;
 				tipTimePassed = (tipTimeEnd - tipTimeStart)/1000;
+				//dataCollectionLst.push([decision, [peopleInSelf, peopleInReg], timeInLine, itemQuantity, masterTimePassed, [tipTimePassed, tipPer], timeStamp]);
 				dataCollectionLst.push({"decision":decision, "peopleInLine":[peopleInSelf, peopleInReg], 
 								"timeInLine": timeInLine, "itemQuantity":itemQuantity, "timeElipse":masterTimePassed, 
-								"tipInfo":[tipTimePassed, tipPer], "timeStamp":timeStamp});				console.log(dataCollectionLst);
+								"tipInfo":[tipTimePassed, tipPer], "timeStamp":timeStamp});
+
+				console.log(dataCollectionLst);
 			}
 			
 			//https://www.jameslmilner.com/posts/downloading-a-file-with-javascript/
@@ -373,7 +444,6 @@
 				const data_json = JSON.stringify(dataCollectionLst);
 				var dataCollection = "${e://Field/dataCollection}";
 				Qualtrics.SurveyEngine.setEmbeddedData( 'dataCollection', data_json);
-				var dataCollection = "${e://Field/dataCollection}";
 				//const data = JSON.stringify(dataCollectionLst);
 				//
 				//const blob = new Blob([data], { type: "application/json" });
@@ -389,4 +459,174 @@
 				//URL.revokeObjectURL(jsonObjectUrl);
 			}
 			
+			//https://github.com/kjeelani/bobalab-jsons
+			function loadJSON(url, callback) {
+			  fetch(url)
+				.then(response => {
+				  return response.json();
+				})
+				.then(data => {
+				  callback(data); // Pass data to callback
+				})
+				.catch(error => {
+				  callback(error.message); // Pass error message to callback
+				});
+			}
+
 			
+			
+			//Global variables 
+			var seed = 5;
+			
+			/**Json file will have the form as such:
+				data = '[{
+					"loops": 2  #This is the number of loops we are doing
+					"tips": [10%, 15%, 20%] 	#This is the amount of tip percent
+					"peopleInLine": [[0, 0], [1, 2]],  #This is the people in life for checkout
+					"itemQuantity": [[2, 5, 3], [0, 4, 9]]  #This is how mnay items to scan
+					"totalPrice":[10.59, 11.20]		#This is how much all the items cost
+					"noneTipButton": true 	#show the none tip button or not
+				
+				}]';
+				for example
+				data = '[{"loops": 2, "tips": ["10%", "15%", "50%"], "peopleInLine" : [[0, 4], [1, 0]], "itemQuantity" : [[0, 0, 1], [0, 2, 1]], "totalPrice":[10.59, 11.20], "noneTipButton":true}]';
+				if we don't want to assign anything, create a json file as such
+				data = '[0]';
+			*/
+			var json_data = '{}';
+			var url = "https://kjeelani.github.io/bobalab-jsons/tipping_game_json-1.json" 
+			var option = 1;
+			
+			var loadingPageWrapper;
+			var mainPagesWrapper;
+			var checkOutWrapper;
+			var tipPageWrapper;
+			var waitingWrapper;
+			
+			var decision;
+			var masterTimeStart;
+			var masterTimeEnd;
+			var masterTimePassed;
+			var tipTimeStart;
+			var tipTimeEnd;
+			var tipTimePassed
+			var loop=0;			
+			var peopleInSelf=0;
+			var peopleInReg=0;
+			var peopleInLine=0;
+			var timeInLine =0;
+			var finalTipAmount = 0;
+			
+			var listOfNames = ["Addison","Angel","Blaine","Brett","Carmen","Clay","Cole","Drew","Ember","Finn","George",
+								"Harley","Jade","Kelsey","Lennon","Madison","Nolan","Owen","Pat","Quincy","Rayne","Sean",
+								"Taylor","Umber","Vick","Wesley","Zephyr"]
+
+
+			var targetValDic = {} //dic for target ID and target value
+			var sliderLstId = [] //list of slider ID
+			var targetValLst = [] // list of target values
+			var displayValLstId = [] //list of display value ID
+			var needValLstId = [] //list of need value ID
+			var timeStamp=[]//list of time/button click on
+			var itemQuantity=[]
+			/**
+				Elements:
+					var decision: 0 for register, 1 for self-checkout
+					var peopleInLine: [ , ] number of people in self-checkout vs number of people in register
+					var timeInLine: how long the person waited in line
+					var itemQuantity: [] how many items to scan 
+					var timeElipse: time it took to complete the entire transaction (seconds)
+					var tip: [ , ] time to decide tip and the percentage of tip/amount
+					var timeStamp: time stamp of every button clicked
+			*/
+			var dataCollectionLst = [] 
+			
+
+			
+			window.onload=function(){
+				preload();
+			
+				loadJSON(url, (data) => {
+					isReady = true;
+					console.log(data);
+					json_data = data[option];
+					console.log(json_data);
+					init();
+				});
+				
+			}
+			
+			
+		</script>
+	</head>
+	<body>
+		<div class="wrapper" id="loadingPageWrapper">
+			Loading...
+		</div>
+		<div class="wrapper" id='mainPagesWrapper'>
+			<div>
+				Currently in line: <span id="numPeopleSelf">0</span> people
+				<input type="button" value="Self-Checkout" onclick="activateCheckout(0), collectTimeStamp(this.id)" class="mainPageButton" id="selfCheckoutBut">
+
+			</div>
+			<div>
+				Currently in line: <span id="numPeopleRegister">0</span> people
+				<input type="button" value="Register" onclick="activateCheckout(1), collectTimeStamp(this.id)" class="mainPageButton" id="registerBut">
+			</div>
+			<div>
+				<input type="button" value="Complete" onclick="downloadData()" id="downloadBut">
+			</div>
+		</div>
+		<div class="wrapper" id='checkOutWrapper'>
+			<div id='goal'>
+				<div>Number of carrots needed to be scanned: <span id='carrotNeedVal' class = 'targetVal'>0</span></div>
+				<div>Number of cabbage needed to be scanned: <span id='cabbageNeedVal' class = 'targetVal'>0</span></div>
+				<div>Number of eggplant needed to be scanned: <span id='eggplantNeedVal' class = 'targetVal'>0</span></div></br>
+			</div>
+			<div id="custodian">Hi! My name is <span id="custodianName"></span>. I will be helping you today.</div></br>
+			<div class="itemWrapper">
+				<div> carrot: <span id="carrotDisplayVal" class = "sliderVal">0</span></div>
+				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'carrotSlider','carrotDisplayVal', 'carrotNeedVal'), collectTimeStamp(this.id)" id="carrot-">
+				<input type="number" min="0" max="10" value="0" class="slider" id="carrotSlider" readonly>
+				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'carrotSlider','carrotDisplayVal', 'carrotNeedVal'), collectTimeStamp(this.id)" id="carrot+">
+
+			</div>
+			<div class="itemWrapper">
+				<div> cabbage: <span id="cabbageDisplayVal" class = "sliderVal">0</span></div>
+				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'cabbageSlider','cabbageDisplayVal', 'cabbageNeedVal'), collectTimeStamp(this.id)" id="cabbage-">
+				<input type="number" min="0" max="10" value="0" class="slider" id="cabbageSlider" readonly>
+				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'cabbageSlider','cabbageDisplayVal', 'cabbageNeedVal'), collectTimeStamp(this.id)" id="cabbage+">
+			</div>
+			<div class="itemWrapper">
+				<div> eggplant: <span id="eggplantDisplayVal" class = "sliderVal">0</span></div>
+				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'eggplantSlider','eggplantDisplayVal', 'eggplantNeedVal'), collectTimeStamp(this.id)" id="eggplant-">
+				<input type="number" min="0" max="10" value="0" class="slider" id="eggplantSlider" readonly>
+				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'eggplantSlider','eggplantDisplayVal', 'eggplantNeedVal'), collectTimeStamp(this.id)" id="eggplant+">
+			</div></br>
+			
+			<input type="button" value="Pay" onclick="activateTipPage(), collectTimeStamp(this.id)" class="paybutton" id="payBut">
+
+		</div>
+		
+		<div class="wrapper" id='tipPageWrapper'>
+			<div>Tip</div></br>
+			<div>Your total cost is $<span id='totalCost'>0</span></div>
+			<div id="tipAmount"></div>
+			<input type="button" value="10%" onclick="collectTimeStamp(this.id), saveData(this.value), returnHomePage()" class="tipButton" id="per_1st_but">
+			<input type="button" value="15%" onclick="collectTimeStamp(this.id), saveData(this.value), returnHomePage()" class="tipButton" id="per_2nd_but">
+			<input type="button" value="20%" onclick="collectTimeStamp(this.id), saveData(this.value), returnHomePage()" class="tipButton" id="per_3rd_but"></br>
+			<input type="button" value="Custom" onclick="collectTimeStamp(this.id), showCustomTip()" class="tipButton" id="customizeBut">
+			<input type="button" value="None" onclick="collectTimeStamp(this.id), saveData(this.value), returnHomePage()" class="tipButton" id="per_0_but">
+			<div id='customizeWrapper'>
+				<input type="text" placeholder='$' id='customizeTipAmount' oninput="customTipValueChange(this.value)">
+				<input type="button" value="Comfirm" onclick="checkNull(document.getElementById('customizeTipAmount').value, this.id)" id="confirmBut">
+				<span id='tipToPercent', style="font-size:12px">0%</span>
+				<p id="customTipWarning">Tip must be a numerical value!</p>
+			</div>
+		</div>
+		
+		<div class="wrapper" id="waitingWrapper">
+			<div> Currently there's <span id="waitingForNumPpl">0</span> people in front of you</div>
+		</div>
+	</body>
+</html>
