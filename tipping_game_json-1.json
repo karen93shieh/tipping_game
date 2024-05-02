@@ -3,7 +3,8 @@
         "loops": 2, 
         "tips": ["10%", "15%", "50%"], 
         "peopleInLine" : [[0, 3], [1, 0]], 
-        "itemQuantity" : [[0, 9, 2], [0, 2, 4]], 
+        "itemQuantity" : [[0, 9, 2], [0, 2, 4, 2]], 
+        "registerSpeed":[500,600],
         "totalPrice":[10.59, 11.20], 
         "noneTipButton":false
     },
@@ -12,7 +13,8 @@
         "loops": 3, 
         "tips": ["10%", "15%", "20%"], 
         "peopleInLine" : [[0, 2], [3, 0], [1,2]], 
-        "itemQuantity" : [[1, 4, 2], [2, 2, 4], [5,1,2]], 
+        "itemQuantity" : [[1, 4, 2, 0], [2, 2, 4], [5, 1, 2, 1, 3]], 
+        "registerSpeed":[500,600, 400],
         "totalPrice":[14.53, 15.52, 14.50], 
         "noneTipButton":true
     },
@@ -21,7 +23,8 @@
         "loops": 3, 
         "tips": ["10%", "15%", "30%"], 
         "peopleInLine" : [[1, 2], [3, 4], [1,2]], 
-        "itemQuantity" : [[0, 4, 1], [2, 2, 1], [2,1,2]], 
+        "itemQuantity" : [[0, 4, 1], [2, 2, 1], [2, 1, 2]], 
+        "registerSpeed":[500,600, 400],
         "totalPrice":[14.53, 12.52, 15.50], 
         "noneTipButton":true
     }

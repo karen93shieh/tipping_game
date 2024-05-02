@@ -17,8 +17,8 @@
 			
 			.wrapper{
 				position:relative;
-				width:30%;
-				height:500px;
+				width:450px;
+				height:700px;
 				background-color:Ivory;
 				margin:auto;
 				padding:10px;
@@ -32,11 +32,30 @@
 				bottom:0px;
 				left:0px;
 			}
-			
+			#selfCheckoutPng{
+				width:200px;
+				position:absolute;
+				bottom:0px;
+				right:0px;
+				
+			}
+			#registerPng{
+				width:300px;
+				position:absolute;
+				bottom:0px;
+				right:0px;
+				
+			}
 			
 			
 			
 			#customTipWarning{
+				color: red;
+				font-size:10px
+				
+			}
+			
+			#payWarning{
 				color: red;
 				font-size:10px
 				
@@ -49,7 +68,11 @@
 			*/
 			!function(f,a,c){var s,l=256,p="random",d=c.pow(l,6),g=c.pow(2,52),y=2*g,h=l-1;function n(n,t,r){function e(){for(var n=u.g(6),t=d,r=0;n<g;)n=(n+r)*l,t*=l,r=u.g(1);for(;y<=n;)n/=2,t/=2,r>>>=1;return(n+r)/t}var o=[],i=j(function n(t,r){var e,o=[],i=typeof t;if(r&&"object"==i)for(e in t)try{o.push(n(t[e],r-1))}catch(n){}return o.length?o:"string"==i?t:t+"\0"}((t=1==t?{entropy:!0}:t||{}).entropy?[n,S(a)]:null==n?function(){try{var n;return s&&(n=s.randomBytes)?n=n(l):(n=new Uint8Array(l),(f.crypto||f.msCrypto).getRandomValues(n)),S(n)}catch(n){var t=f.navigator,r=t&&t.plugins;return[+new Date,f,r,f.screen,S(a)]}}():n,3),o),u=new m(o);return e.int32=function(){return 0|u.g(4)},e.quick=function(){return u.g(4)/4294967296},e.double=e,j(S(u.S),a),(t.pass||r||function(n,t,r,e){return e&&(e.S&&v(e,u),n.state=function(){return v(u,{})}),r?(c[p]=n,t):n})(e,i,"global"in t?t.global:this==c,t.state)}function m(n){var t,r=n.length,u=this,e=0,o=u.i=u.j=0,i=u.S=[];for(r||(n=[r++]);e<l;)i[e]=e++;for(e=0;e<l;e++)i[e]=i[o=h&o+n[e%r]+(t=i[e])],i[o]=t;(u.g=function(n){for(var t,r=0,e=u.i,o=u.j,i=u.S;n--;)t=i[e=h&e+1],r=r*l+i[h&(i[e]=i[o=h&o+t])+(i[o]=t)];return u.i=e,u.j=o,r})(l)}function v(n,t){return t.i=n.i,t.j=n.j,t.S=n.S.slice(),t}function j(n,t){for(var r,e=n+"",o=0;o<e.length;)t[h&o]=h&(r^=19*t[h&o])+e.charCodeAt(o++);return S(t)}function S(n){return String.fromCharCode.apply(0,n)}if(j(c.random(),a),"object"==typeof module&&module.exports){module.exports=n;try{s=require("crypto")}catch(n){}}else"function"==typeof define&&define.amd?define(function(){return n}):c["seed"+p]=n}("undefined"!=typeof self?self:this,[],Math);
 			
-			
+			/**
+				preload(): preloads the webpage.
+				input: none
+				output: none
+			*/
 			function preload(){
 				//Get all the wrapper 
 				loadingPageWrapper = document.getElementById("loadingPageWrapper");
@@ -65,12 +88,9 @@
 				
 			}
 			
-			
-			
-			
-			
+
 			/**
-				init(): initializes the webpage.
+				init(): initializes the webpage and set necessary conditions.
 				input: none
 				output: none
 			*/
@@ -80,27 +100,36 @@
 				
 				var downloadBut = document.getElementById("downloadBut");
 				var custodian = document.getElementById("custodian");
+				var payWarning = document.getElementById("payWarning");
 				
 				//initialize all the sliders 
 				var slider = document.getElementsByClassName("slider");
 				for(var i=0; i<slider.length; i++){
 					sliderLstId.push(slider[i].id);
 				}
-				var displayVal = document.getElementsByClassName("sliderVal");
-				for(var i=0; i<displayVal.length; i++){
-					displayValLstId.push(displayVal[i].id)
-				}
+				//var displayVal = document.getElementsByClassName("sliderVal");
+				//for(var i=0; i<displayVal.length; i++){
+				//	displayValLstId.push(displayVal[i].id)
+				//}
 				
+				//initalize the number of elements 
 				var needVal = document.getElementsByClassName("targetVal");
 				for(var i=0; i<needVal.length; i++){
-					needValLstId.push(needVal[i].id)
+					needValLstId.push(needVal[i].id);
+				}
+				var itemText = document.getElementsByClassName("itemText");
+				var itemWrapper = document.getElementsByClassName("itemWrapper");
+				for(var i=json_data['itemQuantity'][loop].length; i<itemText.length; i++){
+					itemText[i].style.display="none";
+					itemWrapper[i].style.display="none";
 				}
 				
+				
+				//initialize all the people in line condition and the tip 
 				var tipButs = document.getElementsByClassName("tipButton");
 				var totalCost = document.getElementById("totalCost");
 				var noneTipButton = document.getElementById('per_0_but');
 				
-				//initialize all the people in line condition and the tip 
 				if (json_data !=0){
 					peopleInSelf = json_data['peopleInLine'][loop][0];
 					peopleInReg = json_data['peopleInLine'][loop][1];
@@ -129,6 +158,7 @@
 				//set irrelavant elements to invisible
 				downloadBut.style.display="none";
 				custodian.style.display="none";
+				payWarning.style.display="none";
 				
 				mainPagesWrapper.style.display="block";
 				
@@ -140,27 +170,50 @@
 				output: none
 			*/
 			function resetStatus(){
+				//reset sliders
 				var slider = document.getElementsByClassName("slider");
 				for(var i=0; i<slider.length; i++){
 					slider[i].value = 0;
 				}
 				
-				var displayVal = document.getElementsByClassName("sliderVal");
-				for(var i=0; i<displayVal.length; i++){
-					displayVal[i].innerHTML = '0';
-				}
+				//var displayVal = document.getElementsByClassName("sliderVal");
+				//for(var i=0; i<displayVal.length; i++){
+				//	displayVal[i].innerHTML = '0';
+				//}
 				
+				//reset buttons 
 				var buttons = document.getElementsByClassName("addMinusButton");
 				for(var i=0; i<buttons.length; i++){
 					buttons[i].disabled=false;
 				}
 				
+				//reset total cost
 				if(json_data!=0 && loop<json_data["loops"]){
 					var totalCost = document.getElementById("totalCost");
 					totalCost.innerHTML = json_data['totalPrice'][loop].toFixed(2);
 				}
+				
+				//reset custodian 
 				var custodian = document.getElementById("custodian");
 				custodian.style.display="none";
+				
+				//reset days
+				var days = document.getElementById("days");
+				if (loop<json_data["loops"]){
+					days.innerHTML = loop+1;
+				}
+				
+				//reset items
+				var itemText = document.getElementsByClassName("itemText");
+				var itemWrapper = document.getElementsByClassName("itemWrapper");
+				for(var i=0; i<json_data['itemQuantity'][loop].length; i++){
+					itemText[i].style.display="block";
+					itemWrapper[i].style.display="block";
+				}
+				for(var i=json_data['itemQuantity'][loop].length; i<itemText.length; i++){
+					itemText[i].style.display="none";
+					itemWrapper[i].style.display="none";
+				}
 			}
 			/**
 				autoCheckout(): animation of the checkout process when checkout type is register 
@@ -178,14 +231,15 @@
 				custodian.style.display="block";
 				custodianName.innerHTML=listOfNames[Math.floor(Math.random() * (listOfNames.length - 0 + 1) + 0)];
 				
-				var time = 1000;
+				console.log(json_data['registerSpeed'][loop])
+				var time = json_data['registerSpeed'][loop]+500;
 				for (var i=0; i<sliderLstId.length; i++) {
 					document.getElementById(sliderLstId[i]).value = 0;
-					document.getElementById(displayValLstId[i]).innerHTML = '0';
+					//document.getElementById(displayValLstId[i]).innerHTML = '0';
 					for(var j=0; j<=targetValLst[i]; j++){
 						
 						var timer = setTimeout(helperCheckout, time, i, j);
-						time +=500;
+						time += json_data['registerSpeed'][loop];
 					}
 				}
 			}
@@ -196,7 +250,7 @@
 			*/
 			function helperCheckout(i, j){
 				document.getElementById(sliderLstId[i]).value = j;
-				document.getElementById(displayValLstId[i]).innerHTML = j;
+				//document.getElementById(displayValLstId[i]).innerHTML = j;
 				document.getElementById(needValLstId[i]).innerHTML = targetValLst[i]-j;
 			}
 		
@@ -211,8 +265,12 @@
 				
 				if(decision==0){
 					peopleInLine = peopleInSelf;
+					document.getElementById("registerPng").style.display="none";
+					document.getElementById("selfCheckoutPng").style.display="block";
 				}else{
 					peopleInLine = peopleInReg;
+					document.getElementById("registerPng").style.display="block";
+					document.getElementById("selfCheckoutPng").style.display="none";
 				}
 				
 				
@@ -241,7 +299,7 @@
 				var maxTarget = 10;
 				var minTarget = 0;
 				targetValLst=[];
-				for(var i=0; i< targetText.length; i++){
+				for(var i=0; i< json_data['itemQuantity'][loop].length; i++){
 					if (json_data!=0){
 						var val = json_data["itemQuantity"][loop][i];
 					}else{
@@ -251,20 +309,17 @@
 					targetText[i].innerHTML = val;
 					targetValDic[targetText[i].id] = val;
 					targetValLst.push(val);
-					itemQuantity.push(val);
+					//itemQuantity.push(val);
 				}
 			}
 			
-			
-			//function extractSliderValue(slider, displayValId, targetValId){
-			//	displaySpan = document.getElementById(displayValId);
-			//	targetSpan = document.getElementById(targetValId);
-			//	displaySpan.innerHTML = slider.value;
-			//	
-			//	targetSpan.innerHTML = targetValDic[targetValId] - slider.value;
-			//}
-			function updateTarget(updateValue, sliderId, displayValId, targetValId){
-				var displaySpan = document.getElementById(displayValId);
+			/**
+				updateTarget(): changes the item value displayed in the box  
+				input: updateValue, sliderId, targetValId
+				output: none
+			*/
+			function updateTarget(updateValue, sliderId, targetValId){
+				//var displaySpan = document.getElementById(displayValId);
 				var targetSpan = document.getElementById(targetValId);
 				var slider = document.getElementById(sliderId);
 				var newValue = parseInt(slider.value) + parseInt(updateValue)
@@ -272,10 +327,15 @@
 					return;
 				}
 				slider.value = newValue;
-				displaySpan.innerHTML = slider.value;
+				//displaySpan.innerHTML = slider.value;
 				targetSpan.innerHTML = targetValDic[targetValId] - slider.value;
 			}	
 			
+			/**
+				setWaitingTimer(): sets the waiting time if there are people in front of the line   
+				input: none
+				output: none
+			*/
 			function setWaitingTimer(){
 				var numPeopleTxt = document.getElementById("waitingForNumPpl");
 				numPeopleTxt.innerHTML=peopleInLine;
@@ -293,6 +353,11 @@
 				timeInLine = totalWaitTime/1000;
 			}
 			
+			/**
+				updateWait(): helper function for setTimeout in setWaitingTimer()
+				input: numPeopleTxt
+				output: none
+			*/
 			function updateWait(numPeopleTxt){
 				peopleInLine-=1;
 				if(peopleInLine<=0){
@@ -308,19 +373,27 @@
 				}
 			}
 			
-			
+			/**
+				activateTipPage(): activate the tip pages by cheking if the person scans the correct item number or not
+				input: none
+				output: none
+			*/
 			function activateTipPage(){
 				var customizeWrapper = document.getElementById('customizeWrapper');
 				var targetText = document.getElementsByClassName('targetVal');
+				var payWarning = document.getElementById("payWarning");
 				var correct = true;
 				for(var i=0; i< targetText.length; i++){
 					targetVal = targetText[i].innerHTML 
 					if (targetVal!=0){
-						confirm("Please scan the correct number of items!");
+					
+						//confirm("Please scan the correct number of items!");
+						payWarning.style.display="block";
 						correct = false;
 					}
 				}
 				if(correct){
+					payWarning.style.display="none";
 					checkOutWrapper.style.display="none";
 					tipPageWrapper.style.display="block";
 					customizeWrapper.style.display = "none";
@@ -329,6 +402,11 @@
 				
 			}
 			
+			/**
+				showCustomTip(): shows the option to enter in custom tip  
+				input: none
+				output: none
+			*/
 			function showCustomTip(){
 				var customizeWrapper = document.getElementById('customizeWrapper');
 				var warningText = document.getElementById('customTipWarning');
@@ -342,6 +420,11 @@
 
 			}
 			
+			/**
+				customTipValueChange(): check if the tip is a valid format
+				input: value (which is the input the user typed)
+				output: none
+			*/
 			function customTipValueChange(value){
 				var warningText = document.getElementById('customTipWarning');
 				var tipToPercent = document.getElementById('tipToPercent');
@@ -367,6 +450,11 @@
 				
 			}
 			
+			/**
+				checkNull(): check if the tip is null, if null, user cannot proceed 
+				input: tipValue, butID
+				output: none
+			*/
 			function checkNull(tipValue, butID){
 				var warningText = document.getElementById('customTipWarning');
 				if (tipValue == null || tipValue ==''||isNaN(tipValue)){
@@ -379,19 +467,29 @@
 				}
 			}
 			
-			
+			/**
+				collectTimeStamp(): collects the timestamp on everytime the user clicks a button
+				input: elemId
+				output: none
+			*/
 			function collectTimeStamp(elemId){
 				timeStamp.push([elemId, Date.now()]);
 			}
 			
+			/**
+				returnHomePage(): returns to the homepage and reset the condition of the game for a new round
+				input: none
+				output: none
+			*/
 			function returnHomePage(){
 				mainPagesWrapper.style.display = "block";
 				checkOutWrapper.style.display="none";
 				tipPageWrapper.style.display="none";
 				loop+=1;
 				
-				
-				resetStatus();
+				if(loop<json_data['loops']){
+					resetStatus();
+				}
 				
 				var maxPeople = 10;
 				var minPeople = 0;
@@ -426,6 +524,11 @@
 				//downloadBut.style.display="block";
 			}
 			
+			/**
+				saveData(): stores the data of this round to a mega data collection list
+				input: tipPer (percentage of tip)
+				output: none
+			*/
 			function saveData(tipPer){
 				masterTimeEnd = performance.now();
 				tipTimeEnd = performance.now();
@@ -433,17 +536,27 @@
 				tipTimePassed = (tipTimeEnd - tipTimeStart)/1000;
 				//dataCollectionLst.push([decision, [peopleInSelf, peopleInReg], timeInLine, itemQuantity, masterTimePassed, [tipTimePassed, tipPer], timeStamp]);
 				dataCollectionLst.push({"decision":decision, "peopleInLine":[peopleInSelf, peopleInReg], 
-								"timeInLine": timeInLine, "itemQuantity":itemQuantity, "timeElipse":masterTimePassed, 
+								"timeInLine": timeInLine, "itemQuantity":json_data["itemQuantity"][loop], "timeElipse":masterTimePassed, 
 								"tipInfo":[tipTimePassed, tipPer], "timeStamp":timeStamp});
 
 				console.log(dataCollectionLst);
 			}
 			
 			//https://www.jameslmilner.com/posts/downloading-a-file-with-javascript/
+			/**
+				downloadData(): stores the data locally (if umcomment), or stores the values to qualtrics
+				input: none
+				output: none
+			*/
 			function downloadData(){
-				const data_json = JSON.stringify(dataCollectionLst);
-				var dataCollection = "${e://Field/dataCollection}";
-				Qualtrics.SurveyEngine.setEmbeddedData( 'dataCollection', data_json);
+				const userData = JSON.stringify(dataCollectionLst);
+				Qualtrics.SurveyEngine.setEmbeddedData( 'dataCollection', userData);
+				
+				const json_condition = JSON.stringify(json_data);
+				Qualtrics.SurveyEngine.setEmbeddedData( 'json_condition', json_condition);
+				
+				const json_option = JSON.stringify(randomOption);
+				Qualtrics.SurveyEngine.setEmbeddedData( 'option', json_option);
 				//const data = JSON.stringify(dataCollectionLst);
 				//
 				//const blob = new Blob([data], { type: "application/json" });
@@ -460,6 +573,11 @@
 			}
 			
 			//https://github.com/kjeelani/bobalab-jsons
+			/**
+				loadJSON(): loads the json file from the github file
+				input: url, callback
+				output: none
+			*/
 			function loadJSON(url, callback) {
 			  fetch(url)
 				.then(response => {
@@ -479,23 +597,37 @@
 			var seed = 5;
 			
 			/**Json file will have the form as such:
-				data = '[{
+				[{
 					"loops": 2  #This is the number of loops we are doing
 					"tips": [10%, 15%, 20%] 	#This is the amount of tip percent
 					"peopleInLine": [[0, 0], [1, 2]],  #This is the people in life for checkout
 					"itemQuantity": [[2, 5, 3], [0, 4, 9]]  #This is how mnay items to scan
+					"registerSpeed":[500, 600]		#This is how fast the resgister scans each round in milliseconds
 					"totalPrice":[10.59, 11.20]		#This is how much all the items cost
-					"noneTipButton": true 	#show the none tip button or not
+					"noneTipButton": true 		#show the none tip button or not
 				
-				}]';
+				}]
+				
 				for example
-				data = '[{"loops": 2, "tips": ["10%", "15%", "50%"], "peopleInLine" : [[0, 4], [1, 0]], "itemQuantity" : [[0, 0, 1], [0, 2, 1]], "totalPrice":[10.59, 11.20], "noneTipButton":true}]';
-				if we don't want to assign anything, create a json file as such
-				data = '[0]';
+				
+				[
+					{
+				
+						"loops": 2, 
+						"tips": ["10%", "15%", "50%"], 
+						"peopleInLine" : [[0, 3], [1, 0]], 
+						"itemQuantity" : [[0, 9, 2], [0, 2, 4, 2]], 
+						"registerSpeed":[500,600],
+						"totalPrice":[10.59, 11.20], 
+						"noneTipButton":false
+					}
+				]
+				
+				
 			*/
 			var json_data = '{}';
 			var url = "https://kjeelani.github.io/bobalab-jsons/tipping_game_json-1.json" 
-			var option = 1;
+			var randomOption = 1;
 			
 			var loadingPageWrapper;
 			var mainPagesWrapper;
@@ -525,10 +657,10 @@
 			var targetValDic = {} //dic for target ID and target value
 			var sliderLstId = [] //list of slider ID
 			var targetValLst = [] // list of target values
-			var displayValLstId = [] //list of display value ID
+			//var displayValLstId = [] //list of display value ID
 			var needValLstId = [] //list of need value ID
 			var timeStamp=[]//list of time/button click on
-			var itemQuantity=[]
+			//var itemQuantity=[]
 			/**
 				Elements:
 					var decision: 0 for register, 1 for self-checkout
@@ -536,9 +668,10 @@
 					var timeInLine: how long the person waited in line
 					var itemQuantity: [] how many items to scan 
 					var timeElipse: time it took to complete the entire transaction (seconds)
-					var tip: [ , ] time to decide tip and the percentage of tip/amount
+					var tipInfo: [ , ] time to decide tip and the percentage of tip/amount
 					var timeStamp: time stamp of every button clicked
 			*/
+			
 			var dataCollectionLst = [] 
 			
 
@@ -549,7 +682,7 @@
 				loadJSON(url, (data) => {
 					isReady = true;
 					console.log(data);
-					json_data = data[option];
+					json_data = data[randomOption];
 					console.log(json_data);
 					init();
 				});
@@ -564,6 +697,7 @@
 			Loading...
 		</div>
 		<div class="wrapper" id='mainPagesWrapper'>
+			<div>Day <span id="days">1</span></div></br>
 			<div>
 				Currently in line: <span id="numPeopleSelf">0</span> people
 				<input type="button" value="Self-Checkout" onclick="activateCheckout(0), collectTimeStamp(this.id)" class="mainPageButton" id="selfCheckoutBut">
@@ -579,32 +713,52 @@
 		</div>
 		<div class="wrapper" id='checkOutWrapper'>
 			<div id='goal'>
-				<div>Number of carrots needed to be scanned: <span id='carrotNeedVal' class = 'targetVal'>0</span></div>
-				<div>Number of cabbage needed to be scanned: <span id='cabbageNeedVal' class = 'targetVal'>0</span></div>
-				<div>Number of eggplant needed to be scanned: <span id='eggplantNeedVal' class = 'targetVal'>0</span></div></br>
+				<div class="itemText">Number of carrots needed to be scanned: <span id='item_1st_need_val' class = 'targetVal'>0</span></div>
+				<div class="itemText">Number of cabbage needed to be scanned: <span id='item_2nd_need_val' class = 'targetVal'>0</span></div>
+				<div class="itemText">Number of eggplant needed to be scanned: <span id='item_3rd_need_val' class = 'targetVal'>0</span></div>
+				<div class="itemText">Number of apples needed to be scanned: <span id='item_4th_need_val' class = 'targetVal'>0</span></div>
+				<div class="itemText">Number of bananas needed to be scanned: <span id='item_5th_need_val' class = 'targetVal'>0</span></div>
+				</br>
 			</div>
 			<div id="custodian">Hi! My name is <span id="custodianName"></span>. I will be helping you today.</div></br>
 			<div class="itemWrapper">
-				<div> carrot: <span id="carrotDisplayVal" class = "sliderVal">0</span></div>
-				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'carrotSlider','carrotDisplayVal', 'carrotNeedVal'), collectTimeStamp(this.id)" id="carrot-">
-				<input type="number" min="0" max="10" value="0" class="slider" id="carrotSlider" readonly>
-				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'carrotSlider','carrotDisplayVal', 'carrotNeedVal'), collectTimeStamp(this.id)" id="carrot+">
+				<span> carrot: </span>
+				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'item_1st_slider', 'item_1st_need_val'), collectTimeStamp(this.id)" id="item_1st_-">
+				<input type="number" min="0" max="10" value="0" class="slider" id="item_1st_slider" readonly>
+				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'item_1st_slider', 'item_1st_need_val'), collectTimeStamp(this.id)" id="item_1st_+">
 
 			</div>
 			<div class="itemWrapper">
-				<div> cabbage: <span id="cabbageDisplayVal" class = "sliderVal">0</span></div>
-				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'cabbageSlider','cabbageDisplayVal', 'cabbageNeedVal'), collectTimeStamp(this.id)" id="cabbage-">
-				<input type="number" min="0" max="10" value="0" class="slider" id="cabbageSlider" readonly>
-				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'cabbageSlider','cabbageDisplayVal', 'cabbageNeedVal'), collectTimeStamp(this.id)" id="cabbage+">
+				<span> cabbage: </span>
+				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'item_2nd_slider', 'item_2nd_need_val'), collectTimeStamp(this.id)" id="item_2nd_-">
+				<input type="number" min="0" max="10" value="0" class="slider" id="item_2nd_slider" readonly>
+				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'item_2nd_slider', 'item_2nd_need_val'), collectTimeStamp(this.id)" id="item_2nd_+">
 			</div>
 			<div class="itemWrapper">
-				<div> eggplant: <span id="eggplantDisplayVal" class = "sliderVal">0</span></div>
-				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'eggplantSlider','eggplantDisplayVal', 'eggplantNeedVal'), collectTimeStamp(this.id)" id="eggplant-">
-				<input type="number" min="0" max="10" value="0" class="slider" id="eggplantSlider" readonly>
-				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'eggplantSlider','eggplantDisplayVal', 'eggplantNeedVal'), collectTimeStamp(this.id)" id="eggplant+">
-			</div></br>
+				<span> eggplant: </span>
+				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'item_3rd_slider', 'item_3rd_need_val'), collectTimeStamp(this.id)" id="item_3rd_-">
+				<input type="number" min="0" max="10" value="0" class="slider" id="item_3rd_slider" readonly>
+				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'item_3rd_slider', 'item_3rd_need_val'), collectTimeStamp(this.id)" id="item_3rd_+">
+			</div>
+			<div class="itemWrapper">
+				<span> apples: </span>
+				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'item_4th_slider', 'item_4th_need_val'), collectTimeStamp(this.id)" id="item_4th_-">
+				<input type="number" min="0" max="10" value="0" class="slider" id="item_4th_slider" readonly>
+				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'item_4th_slider', 'item_4th_need_val'), collectTimeStamp(this.id)" id="item_4th_+">
+			</div>
+			<div class="itemWrapper">
+				<span> bananas: </span>
+				<input type="button" class="addMinusButton" value="-" onclick="updateTarget(-1,'item_5th_slider', 'item_5th_need_val'), collectTimeStamp(this.id)" id="item_5th_-">
+				<input type="number" min="0" max="10" value="0" class="slider" id="item_5th_slider" readonly>
+				<input type="button" class="addMinusButton" value="+" onclick="updateTarget(1,'item_5th_slider', 'item_5th_need_val'), collectTimeStamp(this.id)" id="item_5th_+">
+			</div>
+			
+			</br>
 			
 			<input type="button" value="Pay" onclick="activateTipPage(), collectTimeStamp(this.id)" class="paybutton" id="payBut">
+			<p id="payWarning">Please scan the correct number of items!</p>
+			<img src="https://berkeley.yul1.qualtrics.com/ControlPanel/Graphic.php?IM=IM_bDuUpED86ipdBCS" alt="Self Check-Out.png" id='selfCheckoutPng'>
+			<img src="https://berkeley.yul1.qualtrics.com/ControlPanel/Graphic.php?IM=IM_rTWFDD2pxOHMmaK" alt="Self Check-Out.png" id='registerPng'>
 
 		</div>
 		
